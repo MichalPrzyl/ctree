@@ -106,6 +106,16 @@ void get_all_children(Node* pwd){
   }
 }
 
+void get_pwd_path(Node* pwd, char *path, size_t size){
+  Node *curr = pwd;
+  path[0] = '\0';
+  while(curr->parent){
+    //printf("%s/%s", curr->parent->name, curr->name);
+    strcat(path, curr->parent->name);
+    curr = curr->parent;
+  }
+}
+
 int main(){
   Node* root = create_node("/", NODE_DIR);
   Node* home = create_node("home", NODE_DIR);
@@ -168,7 +178,13 @@ int main(){
 	pwd = temp_again;
       }
     }
-    printf("%s$ ", pwd->name);
+    char path[300];
+    get_pwd_path(pwd, path, sizeof(path));
+    
+    
+    
+    //printf("%s$ ", pwd->name);
+    printf("%s%s$ ", path, pwd->name);
   }
 
   free_tree(root);
