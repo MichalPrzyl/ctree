@@ -41,9 +41,8 @@ Node* create_node(const char* name, NodeType type){
 
 
 void add_child(Node* parent, Node*child){
-  //if (!parent || !child) return;
-
-  printf("parent->type: %s\n", parent->name);
+  if (!parent || !child) return;
+  
   if (parent->type != NODE_DIR){
     printf("Error: Cannot add child to file '%s'\n", parent->name);
     return;
@@ -75,29 +74,21 @@ bool check_if_children_is_valid(Node* pwd, Node* child){
 }
 
 Node* find_child(Node* dir, const char* name){
-  printf("\nsearching for %s in %s\n", name, dir->name);
   if (dir->type != NODE_DIR) return NULL;
   Node *curr = dir->children;
   while(curr){
     if(strcmp(curr->name, name) == 0){
-      printf("FOUND NAME: %s\n", curr->name);
       return curr;
     }
     curr = curr->next;
   }
-  printf("returning none");
 }
 
 
 
 Node* try_to_change_directory(char *target, Node* pwd){
-  printf("trying to change dir...");
-  //  pwd = re
-  // Node* find_child(Node* dir, const char*
   Node *found = find_child(pwd, target);
-  //printf("%s\n", found->name);
   if (found != NULL){
-    //pwd = found;
     return found;
   }
   else{
@@ -107,7 +98,7 @@ Node* try_to_change_directory(char *target, Node* pwd){
 
 
 void get_all_children(Node* pwd){
-  printf("getting all children\n");
+  //printf("getting all children\n");
   Node *temporary = pwd->children;
   while (temporary != NULL){
     printf("%s\n", temporary->name);
@@ -146,30 +137,38 @@ int main(){
   char cmd[256];
   while(1){
     fgets(cmd, sizeof(cmd), stdin);
-    printf("entered cmd: %s\n", cmd);
+    //printf("entered cmd: %s\n", cmd);
     if (strcmp(cmd, "pwd\n") == 0){
-      printf("current position: %s\n", pwd->name);
+      printf("%s\n", pwd->name);
     }
     if (strcmp(cmd, "whoami\n") == 0){
-      printf("actual user: j0ker\n");
+      printf("j0ker\n");
     }
     if (strcmp(cmd, "ls\n") == 0){
       get_all_children(pwd);
     }
     if (strncmp(cmd, "cd", 2) == 0){
-      printf("cmd: %s\n", cmd);
+      //printf("cmd: %s\n", cmd);
       char *children_string = cmd + 3;
       cmd[strcspn(cmd, "\n")] = '\0';
-      Node *temp_again = try_to_change_directory(children_string, pwd);
-	if (temp_again == NULL){
-	  printf("temp again is null");
-	}
-	  else{
-	    
-	    printf("temp again is not null");
-	    pwd = temp_again;
-	  }
+
+      Node *temp_again = NULL;
+      if (strcmp(children_string, "..") == 0){
+        temp_again = pwd->parent;
+      }
+      else{
+	temp_again = try_to_change_directory(children_string, pwd);
+      }
+      
+      if (temp_again == NULL){
+	//printf("temp again is null");
+      }
+      else{
+	//printf("temp again is not null");
+	pwd = temp_again;
+      }
     }
+    printf("%s$ ", pwd->name);
   }
 
   free_tree(root);
