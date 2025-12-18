@@ -108,12 +108,36 @@ void get_all_children(Node* pwd){
 
 void get_pwd_path(Node* pwd, char *path, size_t size){
   Node *curr = pwd;
-  path[0] = '\0';
-  while(curr->parent){
-    //printf("%s/%s", curr->parent->name, curr->name);
-    strcat(path, curr->parent->name);
+  const char *list[30];
+  int count = 0;
+  
+  while (curr->parent){
+    list[count] = curr->name;
+    printf("adding %s to list\n", curr->parent->name);
+    count++;
     curr = curr->parent;
   }
+
+  // for(int i =0; i < count; i++){
+  //   printf("list[count%d]: %s\n", i, list[i]);
+  // }
+
+  // trzeba to policzyć jakoś
+  //char whole_path[1024] = {0};
+  path[0] = '\0';
+  strcat(path, "/");
+  
+  for(int i = 0; i < count; i++){
+    strcat(path, list[i]);
+    strcat(path, "/");
+  }
+ 
+
+/*
+/home/user
+pwd = user
+*/
+      
 }
 
 int main(){
@@ -178,13 +202,12 @@ int main(){
 	pwd = temp_again;
       }
     }
-    char path[300];
+    char path[1024];
     get_pwd_path(pwd, path, sizeof(path));
     
-    
-    
-    //printf("%s$ ", pwd->name);
-    printf("%s%s$ ", path, pwd->name);
+       
+    printf("%s$ ", path);
+    //printf("path is: %s\n ", path);
   }
 
   free_tree(root);
