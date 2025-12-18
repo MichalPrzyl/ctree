@@ -184,15 +184,17 @@ int main(){
     fgets(cmd, sizeof(cmd), stdin);
     //printf("entered cmd: %s\n", cmd);
     if (strcmp(cmd, "pwd\n") == 0){
-      printf("%s\n", pwd->name);
+      char path_tmp[1024];
+      get_pwd_path(pwd, path_tmp, sizeof(path_tmp));
+      printf("%s\n", path_tmp);
     }
-    if (strcmp(cmd, "whoami\n") == 0){
+    else if (strcmp(cmd, "whoami\n") == 0){
       printf("j0ker\n");
     }
-    if (strcmp(cmd, "ls\n") == 0){
+    else if (strcmp(cmd, "ls\n") == 0){
       get_all_children(pwd);
     }
-    if (strncmp(cmd, "cd", 2) == 0){
+    else if (strncmp(cmd, "cd", 2) == 0){
       //printf("cmd: %s\n", cmd);
       char *children_string = cmd + 3;
       cmd[strcspn(cmd, "\n")] = '\0';
@@ -213,12 +215,18 @@ int main(){
 	pwd = temp_again;
       }
     }
+    else if (strcmp(cmd, "\n") == 0){
+      // Nothing to do here. just print another courage chars
+    }
+    else{
+      printf("command not found\n");
+    }
+    
     char path[1024];
     get_pwd_path(pwd, path, sizeof(path));
     
-       
     printf("%s $ ", path);
-    //printf("path is: %s\n ", path);
+    
   }
 
   free_tree(root);
