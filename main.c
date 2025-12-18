@@ -113,7 +113,7 @@ void get_pwd_path(Node* pwd, char *path, size_t size){
   
   while (curr->parent){
     list[count] = curr->name;
-    printf("adding %s to list\n", curr->parent->name);
+    //printf("adding %s to list\n", curr->parent->name);
     count++;
     curr = curr->parent;
   }
@@ -122,14 +122,25 @@ void get_pwd_path(Node* pwd, char *path, size_t size){
   //   printf("list[count%d]: %s\n", i, list[i]);
   // }
 
+  // show whole list...
+  //printf("--------------\n");
+  //for(int i = 0; i < count; i++){
+  //  printf("trying to read from i=%d\n", i);
+  //  printf("+list[%d]: %s+\n", i, list[i]);
+  //}
+  //printf("--------------\n");
+
+
+  
   // trzeba to policzyć jakoś
   //char whole_path[1024] = {0};
   path[0] = '\0';
   strcat(path, "/");
   
-  for(int i = 0; i < count; i++){
+  for(int i = count -1; i >= 0; i--){
     strcat(path, list[i]);
     strcat(path, "/");
+    //printf("Adding '%s' to path\n", list[i]);
   }
  
 
@@ -206,7 +217,7 @@ int main(){
     get_pwd_path(pwd, path, sizeof(path));
     
        
-    printf("%s$ ", path);
+    printf("%s $ ", path);
     //printf("path is: %s\n ", path);
   }
 
