@@ -74,7 +74,10 @@ bool check_if_children_is_valid(Node* pwd, Node* child){
 }
 
 Node* find_child(Node* dir, const char* name){
-  if (dir->type != NODE_DIR) return NULL;
+  // if (dir->type != NODE_DIR){
+  //   printf("Objects %s is not a directory", dir->name);
+  //   return NULL;
+  // }
   Node *curr = dir->children;
   while(curr){
     if(strcmp(curr->name, name) == 0){
@@ -84,10 +87,12 @@ Node* find_child(Node* dir, const char* name){
   }
 }
 
-
-
 Node* try_to_change_directory(char *target, Node* pwd){
   Node *found = find_child(pwd, target);
+  if (found->type == NODE_FILE){
+    printf("Objects %s is not a directory\n", target);
+    return NULL;
+  }
   if (found != NULL){
     return found;
   }
@@ -98,10 +103,14 @@ Node* try_to_change_directory(char *target, Node* pwd){
 
 
 void get_all_children(Node* pwd){
-  //printf("getting all children\n");
   Node *temporary = pwd->children;
   while (temporary != NULL){
-    printf("%s\n", temporary->name);
+    if (temporary->type == NODE_FILE){
+      printf("F %s\n", temporary->name);
+    }
+    else{
+      printf("D %s\n", temporary->name);
+    }
     temporary = temporary->next;
   }
 }
@@ -193,6 +202,20 @@ int main(){
     }
     else if (strcmp(cmd, "ls\n") == 0){
       get_all_children(pwd);
+    }
+    else if (strncmp(cmd, "mkdir", 5) == 0){
+      //printf("cmd: %s\n", cmd);
+      char *children_string = cmd + 6;
+      cmd[strcspn(cmd, "\n")] = '\0';
+      Node* new_node = create_node(children_string, NODE_DIR);
+      add_child(pwd, new_node);
+      //Node* create_node(const char* name, NodeType type)
+    }
+    else if (strncmp(cmd, "touch", 5) == 0){
+      char *children_string = cmd + 6;
+      cmd[strcspn(cmd, "\n")] = '\0';
+      Node* new_node = create_node(children_string, NODE_FILE);
+      add_child(pwd, new_node);
     }
     else if (strncmp(cmd, "cd", 2) == 0){
       //printf("cmd: %s\n", cmd);
